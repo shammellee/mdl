@@ -9,10 +9,14 @@ tiny command line tool (built on top of [youtube-dl][ytdl]) to download videos f
 
 # Dependencies
 * [youtube-dl][ytdl]
+* [Boost][boost]
+* Xcode Command Line Tools
 * [GNU Make][make]
 
 # Building MDL
-`$ make` creates an executable (mdl)
+* create a `BOOST_ROOT` environment variable pointing to your Boost libraries root (eg. `BOOST_ROOT=/usr/local/boost_1_55_0`)
+* run `$ make` (creates the mdl executable)
+* add the path to the mdl executable to your `PATH` environment variable
 
 # Synopsis
 `mdl [-t,--type <downloadType>] [-f,--format <audioFormat>] [-m,--manifest-file <manifestFile>]`
@@ -41,5 +45,6 @@ https://www.youtube.com/watch?v=Sszc5oMvq60
 The following command will download and extract the audio as mp3s (default audio format) from the youtube videos in `my_manifest.txt`...
 `$ mdl -t audio -m my_manifest.txt`
 
-[ytdl]: https://github.com/rg3/youtube-dl/ "youtube-dl"
-[make]: http://www.gnu.org/software/make/ "GNU Make"
+[ytdl]: https://github.com/rg3/youtube-dl/
+[boost]: http://www.boost.org/
+[make]: http://www.gnu.org/software/make/
