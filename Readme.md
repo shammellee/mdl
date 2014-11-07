@@ -48,3 +48,9 @@ The following command will download and extract the audio as mp3s (default audio
 [ytdl]: https://github.com/rg3/youtube-dl/
 [boost]: http://www.boost.org/
 [make]: http://www.gnu.org/software/make/
+
+# Changelog
+* v0.1.0
+	* lowercase `mediaType` variable instead of testing for variations in case (eg `mediaType == "audioPlaylist" || mediaType == "audioplaylist"`)
+	* convert common strings to `const`
+* initial build
