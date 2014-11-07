@@ -87,6 +87,9 @@ int main(int ac, char* av[])
 			return 0;
 		}
 
+		callCommand();
+		return 0;
+
 	}catch(exception& e)
 	{
 		cerr << "error: " << e.what() << endl;
