@@ -7,7 +7,8 @@ namespace po = boost::program_options;
 
 using namespace std;
 
-const string MDL_CMD_BASE              = "youtube-dl --max-quality 37 --restrict-filenames -wi";
+//const string MDL_CMD_BASE              = "youtube-dl --max-quality 37 --restrict-filenames -wi";
+const string MDL_CMD_BASE              = "youtube-dl --restrict-filenames -wi";
 const string MDL_TEMPLATE              = "'./%(playlist)s/%(playlist_index)s_%(title)s.%(ext)s'";
 const string MDL_AUDIO                 = "audio";
 const string MDL_VIDEO                 = "video";
