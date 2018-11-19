@@ -1,5 +1,5 @@
 # MDL
-tiny command line tool (built on top of [youtube-dl][ytdl]) to download videos from popular sites and optionally extract audio
+Tiny command line tool (built on top of [youtube-dl][ytdl]) to download video/audio from popular sites.
 
 # Notes
 * this tool does not add any functionality that does not exist in [youtube-dl][ytdl]; it simply contains shortcuts for common download tasks with [youtube-dl][ytdl]
