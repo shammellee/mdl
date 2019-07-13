@@ -20,33 +20,52 @@ const string MDL_MEDIATYPE_DESCRIPTION = "media type [" + MDL_AUDIO + ", " + MDL
 const string MDL_DEFAULT_MANIFEST      = "manifest";
 
 string
-  finalCommand = MDL_CMD_BASE
-  ,mediaType
-  ,mediaType__to_lower
-  ,audioFormat
-  ,audioFormat__to_lower
-  ,manifestFilePath
-;
+  final_command
+  ,media_type
+  ,media_type_to_lower
+  ,audio_format
+  ,audio_format_to_lower
+  ,manifest_file_path
+  ;
 
-void callCommand()
+void command_add_flag(string _flag)
 {
-  finalCommand += " -a " + manifestFilePath;
-  cout << "\e[33mCommand:\e[m " << finalCommand << endl;
+  final_command += " " + _flag;
+}
+
+void command_init()
+{
+  command_add_flag(MDL_CMD_BASE);
+  command_add_flag("--restrict-filenames");
+  command_add_flag("--no-overwrites");
+  command_add_flag("--ignore-errors");
+  command_add_flag("--write-auto-sub");
+  command_add_flag("--sub-format srt/vtt/ttml/best");
+  command_add_flag("--sub-lang en");
+  command_add_flag("--embed-subs");
+  command_add_flag("--convert-subs srt");
+}
+
+void command_call()
+{
+  final_command += " --batch-file " + manifest_file_path;
+  cout << "\e[33mCommand:\e[m " << final_command << endl;
   cout << "Download initiated..." << endl;
-  system(finalCommand.c_str());
+  system(final_command.c_str());
 }
 
 int main(int ac, char* av[])
 {
+  command_init();
 
   try
   {
     po::options_description generalOptions("Options");
     generalOptions.add_options()
       ("help,h", "command options")
-      ("type,t", po::value<string>(&mediaType)->default_value(MDL_VIDEO_PLAYLIST),MDL_MEDIATYPE_DESCRIPTION.c_str())
-      ("format,f",po::value<string>(&audioFormat)->default_value(MDL_MP3),"audio format")
-      ("manifest-file,m",po::value<string>(&manifestFilePath)->default_value(MDL_DEFAULT_MANIFEST),"manifest file")
+      ("type,t", po::value<string>(&media_type)->default_value(MDL_VIDEO_PLAYLIST),MDL_MEDIATYPE_DESCRIPTION.c_str())
+      ("format,f",po::value<string>(&audio_format)->default_value(MDL_MP3),"audio format")
+      ("manifest-file,m",po::value<string>(&manifest_file_path)->default_value(MDL_DEFAULT_MANIFEST),"manifest file")
     ;
 
     po::positional_options_description p;
@@ -62,38 +81,38 @@ int main(int ac, char* av[])
       return 0;
     }
 
-    mediaType__to_lower = mediaType;
-    boost::to_lower(mediaType__to_lower);
-    audioFormat__to_lower = audioFormat;
-    boost::to_lower(audioFormat__to_lower);
+    media_type_to_lower = media_type;
+    boost::to_lower(media_type_to_lower);
+    audio_format_to_lower = audio_format;
+    boost::to_lower(audio_format_to_lower);
 
-    if(mediaType__to_lower == MDL_AUDIO || mediaType__to_lower == MDL_AUDIO_PLAYLIST)
+    if(media_type_to_lower == MDL_AUDIO || media_type_to_lower == MDL_AUDIO_PLAYLIST)
     {
-      if(audioFormat__to_lower == MDL_MP3 || audioFormat__to_lower == MDL_M4A || audioFormat == MDL_WAV)
+      if(audio_format_to_lower == MDL_MP3 || audio_format_to_lower == MDL_M4A || audio_format == MDL_WAV)
       {
-        finalCommand += " -x --audio-format " + audioFormat__to_lower;
-        callCommand();
+        final_command += " -x --audio-format " + audio_format_to_lower;
+        command_call();
         return 0;
       }else
       {
-        cout << "Invalid audio format: " << audioFormat << endl;
+        cout << "Invalid audio format: " << audio_format << endl;
         return 1;
       }
     }
 
-    if(mediaType__to_lower == MDL_VIDEO_PLAYLIST || mediaType__to_lower == MDL_AUDIO_PLAYLIST)
+    if(media_type_to_lower == MDL_VIDEO_PLAYLIST || media_type_to_lower == MDL_AUDIO_PLAYLIST)
     {
-      finalCommand += " -o " + MDL_TEMPLATE;
-      callCommand();
+      final_command += " -o " + MDL_TEMPLATE;
+      command_call();
       return 0;
     }
 
-    callCommand();
+    command_call();
     return 0;
 
-  }catch(exception& e)
+  }catch(exception& error)
   {
-    cerr << "error: " << e.what() << endl;
+    cerr << "error: " << error.what() << endl;
     return 1;
   }catch(...)
   {
@@ -102,3 +121,4 @@ int main(int ac, char* av[])
 
   return 0;
 }
+
