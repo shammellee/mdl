@@ -7,7 +7,7 @@ namespace po = boost::program_options;
 
 using namespace std;
 
-const string MDL_CMD_BASE              = "youtube-dl --restrict-filenames --no-overwrites --ignore-errors --write-auto-sub --sub-format srt/vtt/ttml/best --sub-lang en --embed-subs --convert-subs srt";
+const string MDL_CMD_BASE              = "youtube-dl";
 const string MDL_TEMPLATE              = "'./%(playlist)s/%(playlist_index)s_%(title)s.%(ext)s'";
 const string MDL_AUDIO                 = "audio";
 const string MDL_VIDEO                 = "video";
@@ -39,16 +39,11 @@ void command_init()
   command_add_flag("--restrict-filenames");
   command_add_flag("--no-overwrites");
   command_add_flag("--ignore-errors");
-  command_add_flag("--write-auto-sub");
-  command_add_flag("--sub-format srt/vtt/ttml/best");
-  command_add_flag("--sub-lang en");
-  command_add_flag("--embed-subs");
-  command_add_flag("--convert-subs srt");
 }
 
 void command_call()
 {
-  final_command += " --batch-file " + manifest_file_path;
+  command_add_flag("--batch-file " + manifest_file_path);
   cout << "\e[33mCommand:\e[m " << final_command << endl;
   cout << "Download initiated..." << endl;
   system(final_command.c_str());
@@ -66,7 +61,7 @@ int main(int ac, char* av[])
       ("type,t", po::value<string>(&media_type)->default_value(MDL_VIDEO_PLAYLIST),MDL_MEDIATYPE_DESCRIPTION.c_str())
       ("format,f",po::value<string>(&audio_format)->default_value(MDL_MP3),"audio format")
       ("manifest-file,m",po::value<string>(&manifest_file_path)->default_value(MDL_DEFAULT_MANIFEST),"manifest file")
-    ;
+      ;
 
     po::positional_options_description p;
     p.add("manifest-file", -1);
@@ -78,6 +73,7 @@ int main(int ac, char* av[])
     if(vm.count("help"))
     {
       cout << generalOptions << endl;
+
       return 0;
     }
 
@@ -90,29 +86,40 @@ int main(int ac, char* av[])
     {
       if(audio_format_to_lower == MDL_MP3 || audio_format_to_lower == MDL_M4A || audio_format == MDL_WAV)
       {
-        final_command += " -x --audio-format " + audio_format_to_lower;
+        command_add_flag("-x");
+        command_add_flag("--audio-format " + audio_format_to_lower);
         command_call();
+
         return 0;
       }else
       {
         cout << "Invalid audio format: " << audio_format << endl;
+
         return 1;
       }
     }
 
     if(media_type_to_lower == MDL_VIDEO_PLAYLIST || media_type_to_lower == MDL_AUDIO_PLAYLIST)
     {
-      final_command += " -o " + MDL_TEMPLATE;
+      command_add_flag("--write-auto-sub");
+      command_add_flag("--sub-format srt/vtt/ttml/best");
+      command_add_flag("--sub-lang en");
+      command_add_flag("--embed-subs");
+      command_add_flag("--convert-subs srt");
+      command_add_flag("-o " + MDL_TEMPLATE);
       command_call();
+
       return 0;
     }
 
     command_call();
+
     return 0;
 
   }catch(exception& error)
   {
     cerr << "error: " << error.what() << endl;
+
     return 1;
   }catch(...)
   {
