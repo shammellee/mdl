@@ -3,6 +3,7 @@
 #include <iterator>
 #include <boost/program_options.hpp>
 #include <boost/algorithm/string.hpp>
+
 namespace po = boost::program_options;
 
 using namespace std;
@@ -46,10 +47,11 @@ void command_call()
   command_add_flag("--batch-file " + manifest_file_path);
   cout << "\e[33mCommand:\e[m " << final_command << endl;
   cout << "Download initiated..." << endl;
+
   system(final_command.c_str());
 }
 
-int main(int ac, char* av[])
+int main(int argc, char* argv[])
 {
   command_init();
 
@@ -58,16 +60,16 @@ int main(int ac, char* av[])
     po::options_description generalOptions("Options");
     generalOptions.add_options()
       ("help,h", "command options")
-      ("type,t", po::value<string>(&media_type)->default_value(MDL_VIDEO_PLAYLIST),MDL_MEDIATYPE_DESCRIPTION.c_str())
-      ("format,f",po::value<string>(&audio_format)->default_value(MDL_MP3),"audio format")
-      ("manifest-file,m",po::value<string>(&manifest_file_path)->default_value(MDL_DEFAULT_MANIFEST),"manifest file")
+      ("type,t", po::value<string>(&media_type)->default_value(MDL_VIDEO_PLAYLIST), MDL_MEDIATYPE_DESCRIPTION.c_str())
+      ("format,f", po::value<string>(&audio_format)->default_value(MDL_MP3), "audio format")
+      ("manifest-file,m", po::value<string>(&manifest_file_path)->default_value(MDL_DEFAULT_MANIFEST), "manifest file")
       ;
 
     po::positional_options_description p;
     p.add("manifest-file", -1);
 
     po::variables_map vm;
-    po::store(po::command_line_parser(ac, av).options(generalOptions).positional(p).run(), vm);
+    po::store(po::command_line_parser(argc, argv).options(generalOptions).positional(p).run(), vm);
     po::notify(vm);
 
     if(vm.count("help"))
@@ -82,9 +84,16 @@ int main(int ac, char* av[])
     audio_format_to_lower = audio_format;
     boost::to_lower(audio_format_to_lower);
 
-    if(media_type_to_lower == MDL_AUDIO || media_type_to_lower == MDL_AUDIO_PLAYLIST)
+    if(
+      media_type_to_lower == MDL_AUDIO
+      || media_type_to_lower == MDL_AUDIO_PLAYLIST
+    )
     {
-      if(audio_format_to_lower == MDL_MP3 || audio_format_to_lower == MDL_M4A || audio_format == MDL_WAV)
+      if(
+        audio_format_to_lower == MDL_MP3
+        || audio_format_to_lower == MDL_M4A
+        || audio_format == MDL_WAV
+      )
       {
         command_add_flag("-x");
         command_add_flag("--audio-format " + audio_format_to_lower);
@@ -99,7 +108,10 @@ int main(int ac, char* av[])
       }
     }
 
-    if(media_type_to_lower == MDL_VIDEO_PLAYLIST || media_type_to_lower == MDL_AUDIO_PLAYLIST)
+    if(
+      media_type_to_lower == MDL_VIDEO
+      || media_type_to_lower == MDL_VIDEO_PLAYLIST
+    )
     {
       command_add_flag("--write-auto-sub");
       command_add_flag("--sub-format srt/vtt/ttml/best");
@@ -116,12 +128,12 @@ int main(int ac, char* av[])
 
     return 0;
 
-  }catch(exception& error)
+  } catch(exception& error)
   {
     cerr << "error: " << error.what() << endl;
 
     return 1;
-  }catch(...)
+  } catch(...)
   {
     cerr << "Unknown exception!" << endl;
   }
