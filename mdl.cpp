@@ -60,10 +60,10 @@ int main(int argc, char* argv[])
   {
     po::options_description generalOptions("Options");
     generalOptions.add_options()
-      ("help,h", "command options")
+      ("help,h", "display help info")
       ("type,t", po::value<string>(&media_type)->default_value(MDL_VIDEO_PLAYLIST), MDL_MEDIATYPE_DESCRIPTION.c_str())
       ("format,f", po::value<string>(&audio_format)->default_value(MDL_MP3), "audio format")
-      ("rate,r", po::value<string>(&rate), "download rate (eg, 50K, 4.2M, etc)")
+      ("rate,r", po::value<string>(&rate), "download rate (eg, 420k, 4.2M, etc)")
       ("manifest-file,m", po::value<string>(&manifest_file_path)->default_value(MDL_DEFAULT_MANIFEST), "manifest file")
       ;
 
