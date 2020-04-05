@@ -1,2 +1,5 @@
-from this directory, run the following command…
-`$ mdl -t audio -m my_manifest.txt`
+From this directory, run the following command:
+
+```sh
+$ mdl -t audio
+```
