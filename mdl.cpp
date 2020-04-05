@@ -27,6 +27,7 @@ string
   ,audio_format
   ,audio_format_to_lower
   ,manifest_file_path
+  ,rate
   ;
 
 void command_add_flag(string _flag)
@@ -62,6 +63,7 @@ int main(int argc, char* argv[])
       ("help,h", "command options")
       ("type,t", po::value<string>(&media_type)->default_value(MDL_VIDEO_PLAYLIST), MDL_MEDIATYPE_DESCRIPTION.c_str())
       ("format,f", po::value<string>(&audio_format)->default_value(MDL_MP3), "audio format")
+      ("rate,r", po::value<string>(&rate), "download rate (eg, 50K, 4.2M, etc)")
       ("manifest-file,m", po::value<string>(&manifest_file_path)->default_value(MDL_DEFAULT_MANIFEST), "manifest file")
       ;
 
@@ -83,6 +85,8 @@ int main(int argc, char* argv[])
     boost::to_lower(media_type_to_lower);
     audio_format_to_lower = audio_format;
     boost::to_lower(audio_format_to_lower);
+
+    if(!rate.empty()) command_add_flag("--rate " + rate);
 
     if(
       media_type_to_lower == MDL_AUDIO
