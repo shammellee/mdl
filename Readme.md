@@ -43,11 +43,13 @@ video/audio from popular sites.
 
 Option               | Default         | Description
 -------------------- | --------------- | ------------------------------------------------------------
+`-h,--help`          | N/A             | display help info
 `-t,--type`          | `videoPlaylist` | download type (`video`, `videoPlaylist`, `audio`, `audioPlaylist`)
 `-f,--format`        | `mp3`           | audio format (accepts formats specified by [youtube-dl][ytdl])
 `-r,--rate`          | unmetered       | download rate (eg, `420k`, `4.2M`, etc)
+`-q, --filter`       | 22              | filter (eg, 22, 135, 136, `best`, `worst`, `bestvideo`, `worstaudio`, etc)
+`-s, --subtitles`    | No subtitles    | Include subtitles
 `-m,--manifest-file` | `./manifest`    | path to manifest file
-`-h,--help`          | N/A             | display help info
 
 
 # Examples

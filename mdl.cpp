@@ -28,6 +28,7 @@ string
   ,audio_format_to_lower
   ,manifest_file_path
   ,rate
+  ,filter
   ;
 
 void command_add_flag(string _flag)
@@ -58,12 +59,14 @@ int main(int argc, char* argv[])
 
   try
   {
-    po::options_description generalOptions("Options");
-    generalOptions.add_options()
+    po::options_description options("Options");
+    options.add_options()
       ("help,h", "display help info")
       ("type,t", po::value<string>(&media_type)->default_value(MDL_VIDEO_PLAYLIST), MDL_MEDIATYPE_DESCRIPTION.c_str())
       ("format,f", po::value<string>(&audio_format)->default_value(MDL_MP3), "audio format")
       ("rate,r", po::value<string>(&rate), "download rate (eg, 420k, 4.2M, etc)")
+      ("filter,q", po::value<string>(&filter), "filter (eg, 22, 135, 136, best, worst, bestvideo, worstaudio, etc)")
+      ("subtitles,s", "Include subtitles")
       ("manifest-file,m", po::value<string>(&manifest_file_path)->default_value(MDL_DEFAULT_MANIFEST), "manifest file")
       ;
 
@@ -71,12 +74,12 @@ int main(int argc, char* argv[])
     p.add("manifest-file", -1);
 
     po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).options(generalOptions).positional(p).run(), vm);
+    po::store(po::command_line_parser(argc, argv).options(options).positional(p).run(), vm);
     po::notify(vm);
 
     if(vm.count("help"))
     {
-      cout << generalOptions << endl;
+      cout << options << endl;
 
       return 0;
     }
@@ -87,6 +90,8 @@ int main(int argc, char* argv[])
     boost::to_lower(audio_format_to_lower);
 
     if(!rate.empty()) command_add_flag("--rate " + rate);
+
+    if(!filter.empty()) command_add_flag("--format " + filter);
 
     if(
       media_type_to_lower == MDL_AUDIO
@@ -112,26 +117,24 @@ int main(int argc, char* argv[])
       }
     }
 
-    if(
-      media_type_to_lower == MDL_VIDEO
-      || media_type_to_lower == MDL_VIDEO_PLAYLIST
-    )
+    if(vm.count("subtitles"))
     {
       command_add_flag("--write-auto-sub");
       command_add_flag("--sub-format srt/vtt/ttml/best");
       command_add_flag("--sub-lang en");
       command_add_flag("--embed-subs");
       command_add_flag("--convert-subs srt");
-      command_add_flag("-o " + MDL_TEMPLATE);
-      command_call();
+    }
 
-      return 0;
+    if(
+      media_type_to_lower == MDL_AUDIO_PLAYLIST
+      || media_type_to_lower == MDL_VIDEO_PLAYLIST
+    )
+    {
+      command_add_flag("-o " + MDL_TEMPLATE);
     }
 
     command_call();
-
-    return 0;
-
   } catch(exception& error)
   {
     cerr << "error: " << error.what() << endl;
