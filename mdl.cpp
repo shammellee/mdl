@@ -9,7 +9,8 @@ namespace po = boost::program_options;
 using namespace std;
 
 const string MDL_CMD_BASE              = "yt-dlp";
-const string MDL_TEMPLATE              = "'./%(playlist)s/%(playlist_index)s_%(title)s.%(ext)s'";
+const string MDL_FILE_TEMPLATE         = "'./%(title)s.%(ext)s'";
+const string MDL_PLAYLIST_TEMPLATE     = "'./%(playlist)s/%(playlist_index)s_%(title)s.%(ext)s'";
 const string MDL_AUDIO                 = "audio";
 const string MDL_VIDEO                 = "video";
 const string MDL_VIDEO_PLAYLIST        = "videoplaylist";
@@ -53,6 +54,21 @@ void command_call()
   system(final_command.c_str());
 }
 
+bool is_playlist(string _media_type)
+{
+  return MDL_AUDIO_PLAYLIST == _media_type || MDL_VIDEO_PLAYLIST == _media_type;
+}
+
+bool is_audio(string _media_type)
+{
+  return MDL_AUDIO == _media_type || MDL_AUDIO_PLAYLIST == _media_type;
+}
+
+bool is_video(string _media_type)
+{
+  return MDL_VIDEO == _media_type || MDL_VIDEO_PLAYLIST == _media_type;
+}
+
 int main(int argc, char* argv[])
 {
   command_init();
@@ -93,10 +109,14 @@ int main(int argc, char* argv[])
 
     if(!filter.empty()) command_add_flag("--format " + filter);
 
+    /*
     if(
       media_type_to_lower == MDL_AUDIO
       || media_type_to_lower == MDL_AUDIO_PLAYLIST
     )
+    */
+
+    if(is_audio(media_type_to_lower))
     {
       if(
         audio_format_to_lower == MDL_MP3
@@ -126,13 +146,14 @@ int main(int argc, char* argv[])
       command_add_flag("--convert-subs srt");
     }
 
+    /*
     if(
       media_type_to_lower == MDL_AUDIO_PLAYLIST
       || media_type_to_lower == MDL_VIDEO_PLAYLIST
     )
-    {
-      command_add_flag("-o " + MDL_TEMPLATE);
-    }
+    */
+
+    command_add_flag("-o " + (is_playlist(media_type_to_lower) ? MDL_PLAYLIST_TEMPLATE : MDL_FILE_TEMPLATE));
 
     command_call();
   } catch(exception& error)
