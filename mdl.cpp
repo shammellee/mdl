@@ -109,13 +109,6 @@ int main(int argc, char* argv[])
 
     if(!filter.empty()) command_add_flag("--format " + filter);
 
-    /*
-    if(
-      media_type_to_lower == MDL_AUDIO
-      || media_type_to_lower == MDL_AUDIO_PLAYLIST
-    )
-    */
-
     if(is_audio(media_type_to_lower))
     {
       if(
@@ -142,13 +135,6 @@ int main(int argc, char* argv[])
       command_add_flag("--embed-subs");
       command_add_flag("--convert-subs srt");
     }
-
-    /*
-    if(
-      media_type_to_lower == MDL_AUDIO_PLAYLIST
-      || media_type_to_lower == MDL_VIDEO_PLAYLIST
-    )
-    */
 
     command_add_flag("-o " + (is_playlist(media_type_to_lower) ? MDL_PLAYLIST_TEMPLATE : MDL_FILE_TEMPLATE));
 
