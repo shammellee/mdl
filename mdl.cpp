@@ -9,7 +9,7 @@ namespace po = boost::program_options;
 using namespace std;
 
 const string MDL_CMD_BASE              = "yt-dlp";
-const string MDL_FILE_TEMPLATE         = "'./%(title)s.%(ext)s'";
+const string MDL_FILE_TEMPLATE         = "'./%(title)s__%(id)s__%(webpage_url_domain)s.%(ext)s'";
 const string MDL_PLAYLIST_TEMPLATE     = "'./%(playlist)s/%(playlist_index)s_%(title)s.%(ext)s'";
 const string MDL_AUDIO                 = "audio";
 const string MDL_VIDEO                 = "video";
@@ -126,9 +126,6 @@ int main(int argc, char* argv[])
       {
         command_add_flag("-x");
         command_add_flag("--audio-format " + audio_format_to_lower);
-        command_call();
-
-        return 0;
       }else
       {
         cout << "Invalid audio format: " << audio_format << endl;
