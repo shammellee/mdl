@@ -21,6 +21,7 @@ const string MDL_WAV                   = "wav";
 const string MDL_MEDIATYPE_DESCRIPTION = "media type [" + MDL_AUDIO + ", " + MDL_AUDIO_PLAYLIST + ", " + MDL_VIDEO + ", " + MDL_VIDEO_PLAYLIST + "]";
 const string MDL_DEFAULT_MANIFEST      = "manifest";
 
+bool dry_run;
 string
   final_command
   ,media_type
@@ -48,7 +49,11 @@ void command_init()
 void command_call()
 {
   command_add_flag("--batch-file " + manifest_file_path);
+
   cout << "\e[33mCommand:\e[m " << final_command << endl;
+
+  if(dry_run) return;
+
   cout << "Download initiated..." << endl;
 
   system(final_command.c_str());
@@ -84,6 +89,7 @@ int main(int argc, char* argv[])
       ("filter,q", po::value<string>(&filter), "filter (eg, 22, 135, 136, best, worst, bestvideo, worstaudio, etc)")
       ("subtitles,s", "Include subtitles")
       ("manifest-file,m", po::value<string>(&manifest_file_path)->default_value(MDL_DEFAULT_MANIFEST), "manifest file")
+      ("dry-run,N", "show command line instead of downloading")
       ;
 
     po::positional_options_description p;
@@ -137,6 +143,8 @@ int main(int argc, char* argv[])
     }
 
     command_add_flag("-o " + (is_playlist(media_type_to_lower) ? MDL_PLAYLIST_TEMPLATE : MDL_FILE_TEMPLATE));
+
+    if(vm.count("dry-run")) dry_run = true;
 
     command_call();
   } catch(exception& error)
