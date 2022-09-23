@@ -111,10 +111,6 @@ int main(int argc, char* argv[])
     audio_format_to_lower = audio_format;
     boost::to_lower(audio_format_to_lower);
 
-    if(!rate.empty()) command_add_flag("--rate " + rate);
-
-    if(!filter.empty()) command_add_flag("--format " + filter);
-
     if(is_audio(media_type_to_lower))
     {
       if(
@@ -133,6 +129,10 @@ int main(int argc, char* argv[])
       }
     }
 
+    if(!rate.empty()) command_add_flag("--rate " + rate);
+
+    if(!filter.empty()) command_add_flag("--format " + filter);
+
     if(vm.count("subtitles"))
     {
       command_add_flag("--write-auto-sub");
@@ -147,12 +147,14 @@ int main(int argc, char* argv[])
     if(vm.count("dry-run")) dry_run = true;
 
     command_call();
-  } catch(exception& error)
+  }
+  catch(exception& error)
   {
     cerr << "error: " << error.what() << endl;
 
     return 1;
-  } catch(...)
+  }
+  catch(...)
   {
     cerr << "Unknown exception!" << endl;
   }
