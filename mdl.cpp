@@ -22,6 +22,7 @@ const string MDL_MEDIATYPE_DESCRIPTION = "media type [" + MDL_AUDIO + ", " + MDL
 const string MDL_DEFAULT_MANIFEST      = "manifest";
 
 bool dry_run;
+int closest_video_resolution;
 string
   final_command
   ,media_type
@@ -85,6 +86,7 @@ int main(int argc, char* argv[])
       ("help,h", "display help info")
       ("type,t", po::value<string>(&media_type)->default_value(MDL_VIDEO_PLAYLIST), MDL_MEDIATYPE_DESCRIPTION.c_str())
       ("format,f", po::value<string>(&audio_format)->default_value(MDL_MP3), "audio format")
+      ("closest-video-resolution,c", po::value<int>(&closest_video_resolution), "download video with resolution closest to value specified (eg, 480)")
       ("rate,r", po::value<string>(&rate), "download rate (eg, 420k, 4.2M, etc)")
       ("filter,q", po::value<string>(&filter), "filter (eg, 22, 135, 136, best, worst, bestvideo, worstaudio, etc)")
       ("subtitles,s", "Include subtitles")
@@ -127,6 +129,11 @@ int main(int argc, char* argv[])
 
         return 1;
       }
+    }
+
+    if(closest_video_resolution)
+    {
+      command_add_flag("--format-sort 'res~" + std::to_string(closest_video_resolution) + "'");
     }
 
     if(!rate.empty()) command_add_flag("--rate " + rate);
