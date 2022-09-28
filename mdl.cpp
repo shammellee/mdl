@@ -89,6 +89,7 @@ int main(int argc, char* argv[])
       ("closest-video-resolution,c", po::value<int>(&closest_video_resolution), "download video with resolution closest to value specified (eg, 480)")
       ("rate,r", po::value<string>(&rate), "download rate (eg, 420k, 4.2M, etc)")
       ("filter,q", po::value<string>(&filter), "filter (eg, 22, 135, 136, best, worst, bestvideo, worstaudio, etc)")
+      ("list-formats,F", "List available download formats")
       ("subtitles,s", "Include subtitles")
       ("manifest-file,m", po::value<string>(&manifest_file_path)->default_value(MDL_DEFAULT_MANIFEST), "manifest file")
       ("dry-run,N", "show command line instead of downloading")
@@ -106,6 +107,11 @@ int main(int argc, char* argv[])
       cout << options << endl;
 
       return 0;
+    }
+
+    if(vm.count("list-formats"))
+    {
+      command_add_flag("--list-formats");
     }
 
     media_type_to_lower = media_type;
