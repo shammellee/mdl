@@ -29,6 +29,7 @@ string
   ,media_type_to_lower
   ,audio_format
   ,audio_format_to_lower
+  ,format_id
   ,manifest_file_path
   ,rate
   ,filter
@@ -87,6 +88,7 @@ int main(int argc, char* argv[])
       ("type,t", po::value<string>(&media_type)->value_name("TYPE")->default_value(MDL_VIDEO_PLAYLIST), MDL_MEDIATYPE_DESCRIPTION.c_str())
       ("list-formats,F", "List available download formats")
       ("format,f", po::value<string>(&audio_format)->value_name("FORMAT")->default_value(MDL_MP3), "audio format")
+      ("format-id,i", po::value<string>(&format_id)->value_name("REGEX"), "download video whose format id matches specified regex (eg, \"^480[pP]$\")")
       ("closest-video-resolution,c", po::value<int>(&closest_video_resolution)->value_name("RESOLUTION"), "download video with resolution closest to value specified (eg, 480)")
       ("rate,r", po::value<string>(&rate)->value_name("RATE"), "download rate (eg, 420k, 4.2M, etc)")
       ("filter,q", po::value<string>(&filter)->value_name("FILTER"), "quality filter (eg, 22, 135, 136, best, worst, bestvideo, worstaudio, etc)")
@@ -135,6 +137,11 @@ int main(int argc, char* argv[])
 
         return 1;
       }
+    }
+
+    if(vm.count("format-id"))
+    {
+      command_add_flag("--format '[format_id~=\"" + format_id + "\"]'");
     }
 
     if(closest_video_resolution)
