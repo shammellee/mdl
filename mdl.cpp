@@ -162,7 +162,7 @@ int main(int argc, char* argv[])
       command_add_flag("--convert-subs srt");
     }
 
-    command_add_flag("-o " + (is_playlist(media_type_to_lower) ? MDL_PLAYLIST_TEMPLATE : MDL_FILE_TEMPLATE));
+    command_add_flag("--output " + (is_playlist(media_type_to_lower) ? MDL_PLAYLIST_TEMPLATE : MDL_FILE_TEMPLATE));
 
     if(vm.count("dry-run")) dry_run = true;
 
