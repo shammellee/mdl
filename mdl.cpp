@@ -129,7 +129,7 @@ int main(int argc, char* argv[])
         || audio_format == MDL_WAV
       )
       {
-        command_add_flag("-x");
+        command_add_flag("--extract-audio");
         command_add_flag("--audio-format " + audio_format_to_lower);
       }else
       {
